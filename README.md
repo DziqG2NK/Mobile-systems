@@ -19,7 +19,7 @@ oraz walkę zwierzaka z przygotowanymi przeciwnikami.
 * Zwierzaki mogą walczyć z przygotowanymi przeciwnikami
 
 ## Użyte technologie
-
+* React Native + Typescript
 
 ## Skład zespołu
 * Marcin Walendziak
