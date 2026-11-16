@@ -62,7 +62,7 @@ export function HatchScreen() {
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={styles.container}>
-          <Text style={styles.title}>Something is moving...</Text>
+          <Text style={styles.title}>Your animal is hatching...</Text>
 
           <Pressable onPress={onPress} disabled={!canHatch}>
             <Animated.Text
