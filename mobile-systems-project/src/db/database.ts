@@ -1,4 +1,4 @@
-import type { SQLiteDatabase } from 'expo-sqlite';
+import type { SQLiteDatabase } from "expo-sqlite";
 
 export type Animal = {
   name: string;
@@ -19,16 +19,20 @@ export async function migrateDb(db: SQLiteDatabase) {
 }
 
 export async function getAnimal(db: SQLiteDatabase): Promise<Animal | null> {
-  return db.getFirstAsync<Animal>('SELECT name, health, exp FROM animal WHERE id = 1');
+  return db.getFirstAsync<Animal>(
+    "SELECT name, health, exp FROM animal WHERE id = 1",
+  );
 }
 
 export async function saveAnimal(db: SQLiteDatabase, a: Animal) {
   await db.runAsync(
-    'INSERT OR REPLACE INTO animal (id, name, health, exp) VALUES (1, ?, ?, ?)',
-    a.name, a.health, a.exp
+    "INSERT OR REPLACE INTO animal (id, name, health, exp) VALUES (1, ?, ?, ?)",
+    a.name,
+    a.health,
+    a.exp,
   );
 }
 
 export async function deleteAnimal(db: SQLiteDatabase) {
-  await db.runAsync('DELETE FROM animal WHERE id = 1');
+  await db.runAsync("DELETE FROM animal WHERE id = 1");
 }

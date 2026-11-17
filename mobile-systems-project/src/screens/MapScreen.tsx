@@ -4,6 +4,7 @@ import * as Location from "expo-location";
 import React, { useEffect, useRef, useState } from "react";
 import { POINTS, type RewardPoint, REWARD_RADIUS_M } from "../data/location";
 import { distanceMeters } from "../utils/distance";
+import { useGame } from "../state/GameContext";
 
 export default function MapScreen() {
   const [userPos, setUserPos] = useState<Location.LocationObjectCoords | null>(
@@ -12,6 +13,7 @@ export default function MapScreen() {
   const [nearPoint, setNearPoint] = useState<RewardPoint | null>(null);
   const [permissionDenied, setPermissionDenied] = useState(false);
   const notifiedIds = useRef<Set<string>>(new Set());
+  const { addExp } = useGame();
 
   useEffect(() => {
     let subscription: Location.LocationSubscription | undefined;
@@ -163,7 +165,7 @@ export default function MapScreen() {
             fontSize: 16,
           }}
         >
-          Symuluj bliskość punktu
+          Go to random point (dev only)
         </Text>
       </TouchableOpacity>
 
@@ -200,7 +202,7 @@ export default function MapScreen() {
                 marginBottom: 16,
               }}
             >
-              {nearPoint?.name} – możesz odebrać nagrodę: {nearPoint?.reward}
+              {nearPoint?.name} – możesz odebrać nagrodę: {nearPoint?.reward}{" "} exp
             </Text>
 
             <TouchableOpacity
@@ -210,7 +212,13 @@ export default function MapScreen() {
                 padding: 12,
                 alignItems: "center",
               }}
-              onPress={() => setNearPoint(null)}
+              onPress={async () => {
+                if (!nearPoint) return;
+
+                await addExp(nearPoint.reward);
+
+                setNearPoint(null);
+              }}
             >
               <Text
                 style={{
