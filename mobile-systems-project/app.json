@@ -28,7 +28,8 @@
         {
           "locationWhenInUsePermission": "Potrzebujemy twojej lokalizacji aby odblokować nagrody w pobliżu."
         }
-      ]
+      ],
+      "expo-sqlite"
     ]
   }
 }
