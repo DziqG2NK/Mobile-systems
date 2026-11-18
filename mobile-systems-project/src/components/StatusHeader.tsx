@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useGame } from '../state/GameContext';
+import { StyleSheet, Text, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useGame } from "../state/GameContext";
 
 export function StatusHeader() {
   const { animal } = useGame();
@@ -18,13 +18,13 @@ export function StatusHeader() {
 
 const styles = StyleSheet.create({
   bar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 10,
-    backgroundColor: '#1e1e2e',
+    backgroundColor: "#1e1e2e",
   },
-  name: { color: 'white', fontSize: 18, fontWeight: '700' },
-  stat: { color: 'white', fontSize: 16 },
+  name: { color: "white", fontSize: 18, fontWeight: "700" },
+  stat: { color: "white", fontSize: 16 },
 });

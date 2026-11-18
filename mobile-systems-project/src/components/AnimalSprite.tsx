@@ -1,34 +1,26 @@
-import { 
-  useEffect,
-  useRef, 
-  useState,
-  useCallback,
-} from 'react';
-import { 
-  Animated, 
-  Image,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Animated, Image, Pressable, StyleSheet, View } from "react-native";
 
 const IDLE = [
-  require('../../assets/idle/idle1.png'),
-  require('../../assets/idle/idle2.png'),
-  require('../../assets/idle/idle3.png'),
-  require('../../assets/idle/idle4.png'),
+  require("../../assets/idle/idle1.png"),
+  require("../../assets/idle/idle2.png"),
+  require("../../assets/idle/idle3.png"),
+  require("../../assets/idle/idle4.png"),
 ];
 
-const INTERACTION = require('../../assets/interactions/head_rot.png');
+const INTERACTION = require("../../assets/interactions/head_rot.png");
 const INTERACTION_MS = 1000;
 
 function useFrames(frames: number[], fps = 6, active: boolean) {
   const [i, setI] = useState(0);
-  
+
   useEffect(() => {
     if (!active) return;
     setI(0);
-    const id = setInterval(() => setI((n) => (n + 1) % frames.length), 1000 / fps);
+    const id = setInterval(
+      () => setI((n) => (n + 1) % frames.length),
+      1000 / fps,
+    );
     return () => clearInterval(id);
   }, [frames.length, fps, active]);
   return frames[i];
@@ -68,11 +60,14 @@ export function AnimalSprite() {
     }),
     transform: [
       {
-        translateY: heart.interpolate({inputRange: [0, 1], outputRange: [0, -20]})
-      }
+        translateY: heart.interpolate({
+          inputRange: [0, 1],
+          outputRange: [0, -20],
+        }),
+      },
     ],
   };
-  
+
   return (
     <Pressable onPress={onPress}>
       <View style={styles.container}>
@@ -84,13 +79,13 @@ export function AnimalSprite() {
           style={styles.sprite}
           resizeMode="contain"
         />
-      </View>      
+      </View>
     </Pressable>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  container: {width: 200, height: 200, marginTop: 40, alignItems: 'center'},
-  heart: {position: 'absolute', top: -35, fontSize: 40, zIndex: 1},
-  sprite: {width: 200, height: 200},
+  container: { width: 200, height: 200, marginTop: 40, alignItems: "center" },
+  heart: { position: "absolute", top: -35, fontSize: 40, zIndex: 1 },
+  sprite: { width: 200, height: 200 },
 });
