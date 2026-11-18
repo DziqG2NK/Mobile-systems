@@ -1,25 +1,27 @@
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { NavigationContainer } from "@react-navigation/native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { SQLiteProvider } from "expo-sqlite";
-import { Suspense } from "react";
-import { ActivityIndicator } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { StatusHeader } from "./src/components/StatusHeader";
-import { migrateDb } from "./src/db/database";
-import { HatchScreen } from "./src/screens/HatchScreen";
-import { HomeScreen } from "./src/screens/HomeScreen";
-import { PlaceholderScreen } from "./src/screens/PlaceholderScreen";
-import { GameProvider, useGame } from "./src/state/GameContext";
-import MapScreen from "./src/screens/MapScreen";
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SQLiteProvider } from 'expo-sqlite';
+import { Suspense } from 'react';
+import { ActivityIndicator } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { StatusHeader } from './src/components/StatusHeader';
+import { migrateDb } from './src/db/database';
+import { HatchScreen } from './src/screens/HatchScreen';
+import { HomeScreen } from './src/screens/HomeScreen';
+import { PlaceholderScreen } from './src/screens/PlaceholderScreen';
+import { GameProvider, useGame } from './src/state/GameContext';
+import { BattleScreen } from './src/screens/BattleScreen';
+import MapScreen from './src/screens/MapScreen';
+import { LeaveGuardProvider, useLeaveGuard } from './src/state/LeaveGuard';
 
 const Tab = createBottomTabNavigator();
 
 const InventoryScreen = () => <PlaceholderScreen title="Items" />;
-const BattleScreen = () => <PlaceholderScreen title="Battle" />;
 
 function AppContent() {
   const { animal, loading } = useGame();
+  const guardRef = useLeaveGuard();
 
   if (loading) return <ActivityIndicator style={{ flex: 1 }} />;
   if (!animal) return <HatchScreen />;
@@ -27,8 +29,16 @@ function AppContent() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Home"
+        initialRouteName='Home'
         screenOptions={{ header: () => <StatusHeader /> }}
+        screenListeners={({ navigation, route }) => ({
+          tabPress: (e) => {
+            const guard = guardRef.current;
+            if (!guard || route.name === 'Battle') return;
+            e.preventDefault();
+            guard(() => navigation.navigate(route.name));
+          },
+        })}
       >
         <Tab.Screen
           name="Map"
@@ -81,7 +91,9 @@ export default function App() {
       <Suspense fallback={<ActivityIndicator style={{ flex: 1 }} />}>
         <SQLiteProvider databaseName="game.db" onInit={migrateDb} useSuspense>
           <GameProvider>
-            <AppContent />
+            <LeaveGuardProvider>
+              <AppContent />
+            </LeaveGuardProvider>
           </GameProvider>
         </SQLiteProvider>
       </Suspense>
