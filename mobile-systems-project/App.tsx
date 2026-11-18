@@ -11,12 +11,13 @@ import { HatchScreen } from './src/screens/HatchScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { PlaceholderScreen } from './src/screens/PlaceholderScreen';
 import { GameProvider, useGame } from './src/state/GameContext';
+import { BattleScreen } from './src/screens/BattleScreen';
 
 const Tab = createBottomTabNavigator();
 
 const MapScreen = () => <PlaceholderScreen title="Map" />;
 const InventoryScreen = () => <PlaceholderScreen title="Items" />;
-const BattleScreen = () => <PlaceholderScreen title="Battle" />;
+// const BattleScreen = () => <PlaceholderScreen title="Battle" />;
 
 function AppContent() {
   const { animal, loading } = useGame();
