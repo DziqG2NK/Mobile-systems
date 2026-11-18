@@ -12,11 +12,11 @@ import { HomeScreen } from './src/screens/HomeScreen';
 import { PlaceholderScreen } from './src/screens/PlaceholderScreen';
 import { GameProvider, useGame } from './src/state/GameContext';
 import { BattleScreen } from './src/screens/BattleScreen';
+import MapScreen from './src/screens/MapScreen';
 import { LeaveGuardProvider, useLeaveGuard } from './src/state/LeaveGuard';
 
 const Tab = createBottomTabNavigator();
 
-const MapScreen = () => <PlaceholderScreen title="Map" />;
 const InventoryScreen = () => <PlaceholderScreen title="Items" />;
 
 function AppContent() {
@@ -43,26 +43,42 @@ function AppContent() {
         <Tab.Screen
           name="Map"
           component={MapScreen}
-          options={{ tabBarIcon: ({ color, size }) => <Ionicons name="map" color={color} size={size} /> }}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="map" color={color} size={size} />
+            ),
+          }}
         />
         <Tab.Screen
           name="Home"
           component={HomeScreen}
-          options={{ tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} /> }}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home" color={color} size={size} />
+            ),
+          }}
         />
         <Tab.Screen
           name="Battle"
           component={BattleScreen}
           options={{
-            tabBarIcon: ({color, size}) => (
-              <MaterialCommunityIcons name="sword-cross" color={color} size={size} />
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons
+                name="sword-cross"
+                color={color}
+                size={size}
+              />
             ),
           }}
         />
         <Tab.Screen
           name="Items"
           component={InventoryScreen}
-          options={{ tabBarIcon: ({ color, size }) => <Ionicons name="bag" color={color} size={size} /> }}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="bag" color={color} size={size} />
+            ),
+          }}
         />
       </Tab.Navigator>
     </NavigationContainer>
