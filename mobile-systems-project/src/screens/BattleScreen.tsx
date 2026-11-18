@@ -19,6 +19,13 @@ import { useLeaveGuard } from '../state/LeaveGuard';
 type Fighter = { name: string; health: number; maxHealth: number };
 type BattleState = { player: Fighter; enemy: Fighter };
 
+const ATTACKS = [
+  { name: 'Attack 1', damage: 10 },
+  { name: 'Attack 2', damage: 15 },
+  { name: 'Attack 3', damage: 20 },
+  { name: 'Attack 4', damage: 30 },
+];
+
 export function BattleScreen() {
   const { animal } = useGame();
   const db = useSQLiteContext();
@@ -28,6 +35,7 @@ export function BattleScreen() {
   const [battle, setBattle] = useState<BattleState | null>(null);
   const [starting, setStarting] = useState(false);
   const [confirmVisible, setConfirmVisible] = useState(false);
+
   const pendingRef = useRef<(() => void) | null>(null);
   const sessionRef = useRef(0);
 
@@ -72,7 +80,7 @@ export function BattleScreen() {
   };
 
   const finished = battle !== null && (battle.player.health === 0 || battle.enemy.health === 0);
-  const fighting = battle !== null && !finished;
+  const fighting = battle !== null && !finished; // tylko wtedy pytamy o ucieczkę
 
   const askToLeave = useCallback((proceed: () => void) => {
     pendingRef.current = proceed;
@@ -138,10 +146,27 @@ export function BattleScreen() {
 
       <View style={styles.center}>
         <Text style={styles.title}>Battle is HERE!</Text>
-        {finished && <Text style={styles.title}>{playerWon ? 'Wygrana!' : 'Przegrana...'}</Text>}
+        {finished && <Text style={styles.title}>{playerWon ? 'Victory!' : 'You lost...'}</Text>}
 
-        <Button title="Test: -20 HP przeciwnika" onPress={() => dealDamage('enemy', 20)} disabled={finished} />
         <Button title="Test: -20 HP zwierzaka" onPress={() => dealDamage('player', 20)} disabled={finished} />
+      </View>
+
+      {/* Dolny panel z atakami */}
+      <View style={styles.panel}>
+        {ATTACKS.map((attack) => (
+          <Pressable
+            key={attack.name}
+            disabled={finished}
+            onPress={() => dealDamage('enemy', attack.damage)}
+            style={({ pressed }) => [
+              styles.attackTile,
+              pressed && styles.attackTilePressed,
+              finished && styles.attackTileDisabled,
+            ]}
+          >
+            <Text style={styles.attackText}>{attack.name}</Text>
+          </Pressable>
+        ))}
       </View>
 
       <Modal transparent animationType="fade" visible={confirmVisible} onRequestClose={stay}>
@@ -166,6 +191,7 @@ export function BattleScreen() {
 const styles = StyleSheet.create({
   screen: { flex: 1 },
 
+  // "Fight!"
   idle: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   fightBox: {
     backgroundColor: '#1e1e2e',
@@ -176,6 +202,7 @@ const styles = StyleSheet.create({
   fightBoxPressed: { opacity: 0.8 },
   fightText: { color: 'white', fontSize: 28, fontWeight: '700' },
 
+  // Walka
   bars: {
     flexDirection: 'row',
     paddingHorizontal: 8,
@@ -185,6 +212,27 @@ const styles = StyleSheet.create({
   half: { flex: 1 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12 },
   title: { fontSize: 20, fontWeight: '600' },
+
+  panel: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    padding: 12,
+    margin: 8,
+    backgroundColor: '#c9c9d3',
+    borderRadius: 12,
+  },
+  attackTile: {
+    flexBasis: '45%',
+    flexGrow: 1,
+    paddingVertical: 24,
+    alignItems: 'center',
+    backgroundColor: '#1e1e2e',
+    borderRadius: 8,
+  },
+  attackTilePressed: { opacity: 0.8 },
+  attackTileDisabled: { opacity: 0.4 },
+  attackText: { color: 'white', fontSize: 18, fontWeight: '600' },
 
   backdrop: {
     flex: 1,
