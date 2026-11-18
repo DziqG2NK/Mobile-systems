@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 
 type Unit = {
@@ -28,6 +28,8 @@ export function HealthBar({ unit, maxHealth, side = 'left', icon }: Props) {
 
   const ratio = maxHealth > 0 ? Math.max(0, Math.min(1, unit.health / maxHealth)) : 0;
 
+  const [trackWidth, setTrackWidth] = useState(0);
+
   const anim = useRef(new Animated.Value(ratio)).current;
 
   useEffect(() => {
@@ -38,9 +40,10 @@ export function HealthBar({ unit, maxHealth, side = 'left', icon }: Props) {
     }).start();
   }, [ratio, anim]);
 
+  const fullWidth = Math.max(trackWidth, OVERLAP);
   const fillWidth = anim.interpolate({
     inputRange: [0, 1],
-    outputRange: ['0%', '100%'],
+    outputRange: [OVERLAP, fullWidth],
   });
 
   return (
@@ -51,12 +54,8 @@ export function HealthBar({ unit, maxHealth, side = 'left', icon }: Props) {
         </View>
 
         <View
-          style={[
-            styles.track,
-            isLeft
-              ? { marginLeft: -OVERLAP, paddingLeft: OVERLAP }
-              : { marginRight: -OVERLAP, paddingRight: OVERLAP },
-          ]}
+          onLayout={(e) => setTrackWidth(e.nativeEvent.layout.width)}
+          style={[styles.track, isLeft ? { marginLeft: -OVERLAP } : { marginRight: -OVERLAP }]}
         >
           <View style={[styles.fillArea, !isLeft && styles.rowReverse]}>
             <Animated.View
